@@ -11,6 +11,7 @@ bool keywordCheck(char *str);
 bool integerCheck(char *str);
 bool integerVariableCheck(char *str);
 void thatsAnInteger(char *word, int wordAmount);
+void thatsMove(char *word1, char *word2, char *word3, int wordAmount);
 
 char *variables[100];
 int variableIndex = 0;
@@ -19,16 +20,14 @@ int integerIndex = 0;
 
 bool variableCheck(char *str)
 {
-    int len;
-    len = strlen(str);
-    if (len > 20)
+    if (strlen(str) > 20)
     {
 
         return false;
     }
 
     int i = 0;
-    for (i = 0; i < len; i++)
+    for (i = 0; i < strlen(str); i++)
     {
         if (!((str[i] >= 'a' && str[i] <= 'z') ||
               (str[i] >= 'A' && str[i] <= 'Z') ||
@@ -114,7 +113,7 @@ void parse(char *code)
             return;
         }
 
-        int operator;
+        int operator= 0;
         if (!strcmp(word[0], "int"))
             operator= 1;
         else if (!strcmp(word[0], "move"))
@@ -132,9 +131,112 @@ void parse(char *code)
 
         switch (operator)
         {
+        case 0:
+            printf("case0");
+            break;
         case 1: //int
             thatsAnInteger(word[1], wordAmount);
+            break;
+        case 2: //move
+            thatsMove(word[1], word[2], word[3], wordAmount);
+            break;
         }
+    }
+}
+
+void thatsMove(char *word1, char *word2, char *word3, int wordAmount)
+{
+    FILE *fp;
+    fp = fopen("anewliz.txt", "a");
+    fprintf(fp, "move is a keyword.\n");
+
+    int i = 0; //to see if what's coming next is integer or variable
+    if (integerCheck(word1))
+    {
+        fprintf(fp, "%s is an integer.\n", word1);
+        i = atoi(word1);
+    }
+    else if (integerVariableCheck(word1))
+    {
+        fprintf(fp, "%s is a variable.\n", word1);
+        int j;
+        for (j = 0; j < variableIndex; j++)
+        {
+            if (!strcmp(variables[j], word1))
+            {
+                i = integers[j];
+                break;
+            }
+        }
+    }
+    else if (keywordCheck(word1))
+    {
+        printf("%s is not an integer or variable but keyword.\n");
+        return 0;
+    }
+    else if (word1 == NULL)
+    {
+        printf("Expected integer or variable, found NULL.");
+        return 0;
+    }
+    else
+    {
+        printf("Expected integer or variable, found %s.\n", word1);
+    }
+
+    if (!strcmp(word2, "to"))
+    {
+        fprintf(fp, "to is a keyword.\n");
+    }
+    else if (word2 == NULL)
+    {
+        printf("Expected keyword \"to\", found NULL.");
+        return 0;
+    }
+    else
+    {
+        printf("Expected keyword \"to\", found %s.\n", word2);
+        return 0;
+    }
+
+    if (integerVariableCheck(word3))
+    {
+        printf("aaaaaaaaaaa");
+        fprintf(fp, "%s is a variable.\n", word3);
+        int k;
+        for (k = 0; k < variableIndex; k++)
+        {
+            if (!strcmp(variables[k], word3))
+            {
+                integers[k] = i;
+                break;
+            }
+        }
+    }
+    else if (keywordCheck(word3))
+    {
+        printf("Expected variable, found keyword.\n");
+        return 0;
+    }
+    else if (word3 == NULL)
+    {
+        printf("Expected variable, found NULL.");
+        return 0;
+    }
+    else
+    {
+        printf("Expected variable, found %s.", word3);
+        return 0;
+    }
+
+    if (wordAmount == 4)
+    {
+        fprintf(fp, "'.' is end of line.\n");
+    }
+    else
+    {
+        printf("End of line is expected.\n");
+        return 0;
     }
 }
 
@@ -142,12 +244,10 @@ void thatsAnInteger(char *word, int wordAmount)
 {
     FILE *fp;
     fp = fopen("anewliz.txt", "a");
-    fprintf(fp, "int is a keyword\n");
-    printf("weord: %s", word);
+    fprintf(fp, "int is a keyword.\n");
     if (variableCheck(word))
     {
-        printf("%s is an integer variable\n", word);
-        fprintf(fp, "%s is an integer variable\n", word);
+        fprintf(fp, "%s is an integer variable.\n", word);
         variables[variableIndex++] = word;
         integers[integerIndex++] = 0;
     }
@@ -158,48 +258,28 @@ void thatsAnInteger(char *word, int wordAmount)
     }
     else if (word == NULL)
     {
-        printf("Expected variable, found NULL\n");
+        printf("Expected variable, found NULL.\n");
         return 0;
     }
     else
     {
-        printf("Expected variable, found %s\n", word);
+        printf("Expected variable, found %s.\n", word);
         return 0;
     }
 
     if (wordAmount == 2)
     {
-        fprintf(fp, "'.' end of line\n");
+        fprintf(fp, "'.' is end of line.\n");
     }
     else
     {
-        printf("End of line is expected\n");
+        printf("End of line is expected.\n");
         return 0;
     }
 }
 
 int main()
 {
-    /*FILE *filePointer;
-    long lineSize;
-    char *code;
-
-    if ((filePointer = fopen("zort.txt", "r")) == NULL)
-    {
-        printf("Dosya acilamadi");
-        exit(1);
-    }
-    else
-    {
-        fseek(filePointer, 0, SEEK_END);
-        lineSize = ftell(filePointer);
-        rewind(filePointer);
-        code = calloc(1, lineSize + 1);
-        while (code != EOF)
-        {
-            code = fgetc(filePointer);
-        }
-        parse(code);*/
     FILE *filePointer;
     long lineSize;
     char *code;
