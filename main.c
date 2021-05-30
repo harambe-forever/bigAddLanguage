@@ -12,6 +12,9 @@ bool integerCheck(char *str);
 bool integerVariableCheck(char *str);
 void thatsAnInteger(char *word, int wordAmount);
 void thatsMove(char *word1, char *word2, char *word3, int wordAmount);
+void thatsAdd(char *word1, char *word2, char *word3, int wordAmount);
+void thatsSub(char *word1, char *word2, char *word3, int wordAmount);
+void thatsOutput(char *word0, char *word1, char *word2, char *word3, int wordAmount);
 
 char *variables[100];
 int variableIndex = 0;
@@ -140,7 +143,216 @@ void parse(char *code)
         case 2: //move
             thatsMove(word[1], word[2], word[3], wordAmount);
             break;
+        case 3: //add
+            thatsAdd(word[1], word[2], word[3], wordAmount);
+            break;
+        case 4: //sub
+            thatsSub(word[1], word[2], word[3], wordAmount);
+            break;
+        case 5: //out
+            thatsOutput(word[0], word[1], word[2], word[3], wordAmount);
+            break;
         }
+    }
+}
+
+void thatsOutput(char *word0, char *word1, char *word2, char *word3, int wordAmount)
+{
+    printf("word amount of out: %d", wordAmount);
+    printf("word0: %s\n", word0);
+    printf("word1: %s\n", word1);
+    printf("word2: %s\n", word2);
+    printf("word3: %s\n", word3);
+}
+
+void thatsSub(char *word1, char *word2, char *word3, int wordAmount)
+{
+    FILE *fp;
+    fp = fopen("anewliz.txt", "a");
+    fprintf(fp, "sub is a keyword.\n");
+
+    int i = 0; //to downcast a str int to int int
+    if (integerVariableCheck(word1))
+    {
+        fprintf(fp, "%s is a variable.\n");
+        int j;
+        for (j = 0; j < variableIndex; j++)
+        {
+            if (strcmp(variables[j], word1))
+            {
+                i = integers[j];
+                break;
+            }
+        }
+    }
+    else if (integerCheck(word1))
+    {
+        printf("%s is a variable.\n");
+        i = atoi(word1); //downcasting
+    }
+    else if (keywordCheck(word1))
+    {
+        printf("Expected integer or variable, found keyword.\n");
+        return 0;
+    }
+    else if (word1 == NULL)
+    {
+        printf("Expected integer or variable, found NULL.\n");
+        return 0;
+    }
+    else
+    {
+        printf("Expected integer or variable, found %s.\n", word1);
+        return 0;
+    }
+
+    if (!strcmp(word2, "from"))
+    {
+        fprintf(fp, "from is a keyword.\n");
+    }
+    else if (word2 == NULL)
+    {
+        printf("Expected keyword \"from\", found NULL.\n");
+        return 0;
+    }
+    else
+    {
+        printf("Expected keyword \"from\", found %s", word2);
+        return 0;
+    }
+
+    if (integerVariableCheck(word3))
+    {
+        fprintf(fp, "%s is a variable.\n");
+        int k;
+        for (k = 0; k < variableIndex; k++)
+        {
+            if (!strcmp(variables[k], word3))
+            {
+                integers[k] -= i;
+                break;
+            }
+        }
+    }
+    else if (keywordCheck(word3))
+    {
+        printf("Expected variable, found keyword.\n");
+        return 0;
+    }
+    else if (word3 == NULL)
+    {
+        printf("Expected variable, found NULL.\n");
+        return 0;
+    }
+    else
+    {
+        printf("Expected variable, found %s.\n", word3);
+        return 0;
+    }
+
+    if (wordAmount == 4)
+    {
+        fprintf(fp, "'.' is end of line.\n\n");
+    }
+    else
+    {
+        printf("End of line is expected.\n");
+        return 0;
+    }
+}
+
+void thatsAdd(char *word1, char *word2, char *word3, int wordAmount)
+{
+    FILE *fp;
+    fp = fopen("anewliz.txt", "a");
+    fprintf(fp, "add is a keyword.\n");
+
+    int i = 0; //to downcast a str int to int int
+    if (integerVariableCheck(word1))
+    {
+        fprintf(fp, "%s is a variable.\n", word1);
+        int j;
+        for (j = 0; j < variableIndex; j++)
+        {
+            if (!strcmp(variables[j], word1))
+            {
+                i = integers[j];
+                break;
+            }
+        }
+    }
+    else if (integerCheck(word1))
+    {
+        fprintf(fp, "%s is an integer.\n", word1);
+        i = atoi(word1); //downcasting
+    }
+    else if (keywordCheck(word1))
+    {
+        printf("Expected integer or variable, found keyword.\n");
+        return 0;
+    }
+    else if (word1 == NULL)
+    {
+        printf("Expected integer or variable, found NULL.\n");
+        return 0;
+    }
+    else
+    {
+        printf("Expected integer or variable, found %s.\n", word1);
+        return 0;
+    }
+
+    if (!strcmp(word2, "to"))
+    {
+        fprintf(fp, "to is a keyword.\n");
+    }
+    else if (word2 == NULL)
+    {
+        printf("Expected keyword \"to\", found NULL.\n");
+        return 0;
+    }
+    else
+    {
+        printf("Expected keyword \"to\", found %s.\n", word2);
+        return 0;
+    }
+
+    if (integerVariableCheck(word3))
+    {
+        fprintf(fp, "%s is a variable.\n", word3);
+        int k;
+        for (k = 0; k < variableIndex; k++)
+        {
+            if (strcmp(variables[k], word3))
+            {
+                integers[k] += i;
+                break;
+            }
+        }
+    }
+    else if (keywordCheck(word3))
+    {
+        printf("Expected variable, found keyword.\n");
+        return 0;
+    }
+    else if (word3 == NULL)
+    {
+        printf("Expected variable, found NULL.\n");
+        return 0;
+    }
+    else
+    {
+        printf("Expected variable, found %s.\n", word3);
+        return 0;
+    }
+    if (wordAmount == 4)
+    {
+        fprintf(fp, "'.' is end of line.\n\n");
+    }
+    else
+    {
+        printf("End of line is expected.\n");
+        return 0;
     }
 }
 
@@ -171,7 +383,7 @@ void thatsMove(char *word1, char *word2, char *word3, int wordAmount)
     }
     else if (keywordCheck(word1))
     {
-        printf("%s is not an integer or variable but keyword.\n");
+        printf("%s Expected integer or variable, found keyword.\n");
         return 0;
     }
     else if (word1 == NULL)
@@ -201,7 +413,6 @@ void thatsMove(char *word1, char *word2, char *word3, int wordAmount)
 
     if (integerVariableCheck(word3))
     {
-        printf("aaaaaaaaaaa");
         fprintf(fp, "%s is a variable.\n", word3);
         int k;
         for (k = 0; k < variableIndex; k++)
@@ -231,7 +442,7 @@ void thatsMove(char *word1, char *word2, char *word3, int wordAmount)
 
     if (wordAmount == 4)
     {
-        fprintf(fp, "'.' is end of line.\n");
+        fprintf(fp, "'.' is end of line.\n\n");
     }
     else
     {
@@ -253,7 +464,7 @@ void thatsAnInteger(char *word, int wordAmount)
     }
     else if (keywordCheck(word))
     {
-        printf("%s is not a variable but keyword.\n", word);
+        printf("%s Expected variable, found keyword.\n", word);
         return 0;
     }
     else if (word == NULL)
@@ -269,7 +480,7 @@ void thatsAnInteger(char *word, int wordAmount)
 
     if (wordAmount == 2)
     {
-        fprintf(fp, "'.' is end of line.\n");
+        fprintf(fp, "'.' is end of line.\n\n");
     }
     else
     {
