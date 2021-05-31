@@ -16,7 +16,7 @@ void thatsMove(char *word1, char *word2, char *word3, int wordAmount);
 void thatsAdd(char *word1, char *word2, char *word3, int wordAmount);
 void thatsSub(char *word1, char *word2, char *word3, int wordAmount);
 void thatsOutput(char **ptr, int wordAmount);
-void thatsALoop(char **word, int wordAmount);
+void thatsALoop(char *word1, char *word2, int wordAmount);
 void codeBlock(char **word, int wordAmount);
 
 char *variables[512];
@@ -168,7 +168,7 @@ void parse(char *code)
             thatsOutput(word, wordAmount);
             break;
         case 6: //loop
-            thatsALoop(word, wordAmount);
+            thatsALoop(word[1], word[2], wordAmount);
             break;
         case 7:
             codeBlock(word, wordAmount);
@@ -220,7 +220,8 @@ void codeBlock(char **word, int wordAmount)
         else if (!strcmp(str, "loop"))
         {
             printf("WERE IN LOOP.\n");
-            thatsALoop(word, wordAmount - 1);
+            printf("word[k]:%s word[k+1]:%s wordAmount-1:%d", word[k], word[k + 1], wordAmount - 1);
+            thatsALoop(word[k], word[k + 1], wordAmount - 1);
         }
         else if (!strcmp(str, "out"))
         {
@@ -234,59 +235,59 @@ void codeBlock(char **word, int wordAmount)
     }
 }
 
-void thatsALoop(char **word, int wordAmount)
+void thatsALoop(char *word1, char *word2, int wordAmount)
 {
     FILE *fp;
     fp = fopen("anewliz.txt", "a");
     fprintf(fp, "loop is a keyword.\n");
 
     int i = 0; //loop amount
-    if (integerVariableCheck(word[1]))
+    if (integerVariableCheck(word1))
     {
-        fprintf(fp, "%s is a variable.\n", word[1]);
+        fprintf(fp, "%s is a variable.\n", word1);
         int j;
         for (j = 0; j < variableIndex; j++)
         {
-            if (!strcmp(variables[j], word[1]))
+            if (!strcmp(variables[j], word1))
             {
                 i = integers[j];
                 break;
             }
         }
     }
-    else if (integerCheck(word[1]))
+    else if (integerCheck(word1))
     {
-        fprintf(fp, "%s is an integer.\n", word[1]);
-        i = atoi(word[1]);
+        fprintf(fp, "%s is an integer.\n", word1);
+        i = atoi(word1);
     }
-    else if (keywordCheck(word[1]))
+    else if (keywordCheck(word1))
     {
         printf("Expected integer or variable, found keyword.\n");
         return 0;
     }
-    else if (word[1] == NULL)
+    else if (word1 == NULL)
     {
         printf("Expected integer or variable, found NULL.\n");
         return 0;
     }
     else
     {
-        printf("Expected integer or variable, found %s.\n", word[1]);
+        printf("Expected integer or variable, found %s.\n", word1);
         return 0;
     }
 
-    if (!strcmp(word[2], "times"))
+    if (!strcmp(word2, "times"))
     {
         fprintf(fp, "times is a keyword.\n");
     }
-    else if (word[2] == NULL)
+    else if (word2 == NULL)
     {
         printf("Expected keyword \"times\", found NULL.\n");
         return 0;
     }
     else
     {
-        printf("Expected keyword \"times\", found %s.\n", word[2]);
+        printf("Expected keyword \"times\", found %s.\n", word2);
         return 0;
     }
 
