@@ -309,6 +309,35 @@ void thatsOutput(char **ptr, int wordAmount)
                 fprintf(fp, "%s is an integer.\n", word);
                 fprintf(fp, "Seperator\n");
             }
+            else if (strncmp(word, "\"", 1) == 0 && flag == true)
+            {
+                int counter2 = 0;
+                int len;
+                bool flag2 = false;
+                while (ptr[counter2] != NULL)
+                {
+                    char *word = ptr[counter2];
+                    strcat(word, ",");
+                    len = strlen(word);
+                    if (strncmp(word, "\"", 1) == 0)
+                    {
+                        flag2 = true;
+                    }
+                    if (flag2)
+                    {
+                        if (strncmp(&word[len - 2], "\"", 1) == 0)
+                        {
+                            word[strlen(word) - 1] = '\0';
+                            fprintf(fp, "%s is a string constant.\nSeperator.\n", word);
+                            flag2 = false;
+                            break;
+                        }
+                        fprintf(fp, "%s ", word);
+                    }
+                    counter2++;
+                }
+                flag = false;
+            }
             else
             {
                 printf("Expected string, integer or variable, found %s.\n", word);
@@ -334,7 +363,6 @@ void thatsOutput(char **ptr, int wordAmount)
                 }
                 if (flag2)
                 {
-
                     if (strncmp(&word[len - 2], "\"", 1) == 0)
                     {
                         word[strlen(word) - 1] = '\0';
