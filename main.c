@@ -199,28 +199,28 @@ void codeBlock(char **word, int wordAmount)
         k++;
         if (!strcmp(str, "int"))
         {
-            printf("WERE IN INTEGER. wordAmount:%d\n", wordAmount);
+            printf("WERE IN INTEGER.\n", wordAmount);
             thatsAnInteger(word[2], wordAmount - 1);
         }
         else if (!strcmp(str, "move"))
         {
             printf("WERE IN MOVE.\n");
-            thatsMove(word[k + 1], word[k + 2], word[k + 3], wordAmount);
+            thatsMove(word[k], word[k + 1], word[k + 2], wordAmount - 1);
         }
         else if (!strcmp(str, "add"))
         {
             printf("WERE IN ADD.\n");
-            thatsAdd(word[k + 1], word[k + 2], word[k + 3], wordAmount);
+            thatsAdd(word[k], word[k + 1], word[k + 2], wordAmount - 1);
         }
         else if (!strcmp(str, "sub"))
         {
             printf("WERE IN SUB.\n");
-            thatsSub(word[k + 1], word[k + 2], word[k + 3], wordAmount);
+            thatsSub(word[k], word[k + 1], word[k + 2], wordAmount - 1);
         }
         else if (!strcmp(str, "loop"))
         {
             printf("WERE IN LOOP.\n");
-            thatsALoop(word, wordAmount);
+            thatsALoop(word, wordAmount - 1);
         }
         else if (!strcmp(str, "out"))
         {
@@ -437,7 +437,7 @@ void thatsSub(char *word1, char *word2, char *word3, int wordAmount)
     int i = 0; //to downcast a str int to int int
     if (integerVariableCheck(word1))
     {
-        fprintf(fp, "%s is a variable.\n");
+        fprintf(fp, "%s is a variable.\n", word1);
         int j;
         for (j = 0; j < variableIndex; j++)
         {
@@ -450,7 +450,7 @@ void thatsSub(char *word1, char *word2, char *word3, int wordAmount)
     }
     else if (integerCheck(word1))
     {
-        printf("%s is a variable.\n");
+        fprintf(fp, "%s is an integer.\n", word1);
         i = atoi(word1); //downcasting
     }
     else if (keywordCheck(word1))
@@ -486,7 +486,7 @@ void thatsSub(char *word1, char *word2, char *word3, int wordAmount)
 
     if (integerVariableCheck(word3))
     {
-        fprintf(fp, "%s is a variable.\n");
+        fprintf(fp, "%s is a variable.\n", word3);
         int k;
         for (k = 0; k < variableIndex; k++)
         {
