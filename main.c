@@ -150,7 +150,7 @@ void parse(char *code)
         switch (operator)
         {
         case 0:
-            printf("case0");
+            printf("Character Not Recognized.\n");
             break;
         case 1: //int
             thatsAnInteger(word[1], wordAmount);
@@ -190,6 +190,48 @@ void codeBlock(char **word, int wordAmount)
     FILE *fp;
     fp = fopen("anewliz.txt", "a");
     fprintf(fp, "codeBlock'a girdik.\n\n");
+
+    int k = 1;
+    char newCode[100] = "";
+    while (word[k] != NULL)
+    {
+        char *str = word[k];
+        k++;
+        if (!strcmp(str, "int"))
+        {
+            printf("WERE IN INTEGER. wordAmount:%d\n", wordAmount);
+            thatsAnInteger(word[2], wordAmount - 1);
+        }
+        else if (!strcmp(str, "move"))
+        {
+            printf("WERE IN MOVE.\n");
+            thatsMove(word[k + 1], word[k + 2], word[k + 3], wordAmount);
+        }
+        else if (!strcmp(str, "add"))
+        {
+            printf("WERE IN ADD.\n");
+            thatsAdd(word[k + 1], word[k + 2], word[k + 3], wordAmount);
+        }
+        else if (!strcmp(str, "sub"))
+        {
+            printf("WERE IN SUB.\n");
+            thatsSub(word[k + 1], word[k + 2], word[k + 3], wordAmount);
+        }
+        else if (!strcmp(str, "loop"))
+        {
+            printf("WERE IN LOOP.\n");
+            thatsALoop(word, wordAmount);
+        }
+        else if (!strcmp(str, "out"))
+        {
+            printf("WERE IN OUT.\n");
+            thatsOutput(word, wordAmount);
+        }
+        else
+        {
+            printf("");
+        }
+    }
 }
 
 void thatsALoop(char **word, int wordAmount)
@@ -198,7 +240,7 @@ void thatsALoop(char **word, int wordAmount)
     fp = fopen("anewliz.txt", "a");
     fprintf(fp, "loop is a keyword.\n");
 
-    int i = 0;
+    int i = 0; //loop amount
     if (integerVariableCheck(word[1]))
     {
         fprintf(fp, "%s is a variable.\n", word[1]);
@@ -248,20 +290,6 @@ void thatsALoop(char **word, int wordAmount)
         return 0;
     }
 
-    /*int k;
-    for (k = 0; k < i; k++)
-    {
-        printf("a");
-        char loopCode[256] = "";
-        for (k = 3; k < wordAmount; k++)
-        {
-            strcat(loopCode, " ");
-            strcat(loopCode, word[i]);
-        }
-        strcat(loopCode, ".");
-        parse(loopCode);
-    }*/
-
     if (wordAmount == 3)
     {
         fprintf(fp, "'.' is end of line.\n\n");
@@ -278,8 +306,10 @@ void thatsOutput(char **ptr, int wordAmount)
     FILE *fp;
     fp = fopen("anewliz.txt", "a");
     fprintf(fp, "out is a keyword.\n");
+
     bool flag = true;
     int counter = 1;
+
     while (counter != wordAmount)
     {
         char *word = ptr[counter];
@@ -302,7 +332,7 @@ void thatsOutput(char **ptr, int wordAmount)
             else if (integerVariableCheck(word))
             {
                 fprintf(fp, "%s is a variable.\n", word);
-                fprintf(fp, "Seperator\n");
+                fprintf(fp, "Seperator.\n");
             }
             else if (integerCheck(word))
             {
@@ -327,7 +357,7 @@ void thatsOutput(char **ptr, int wordAmount)
                     {
                         if (strncmp(&word[len - 2], "\"", 1) == 0)
                         {
-                            word[strlen(word) - 1] = '\0';
+                            word[len - 1] = '\0';
                             fprintf(fp, "%s is a string constant.\nSeperator.\n", word);
                             flag2 = false;
                             break;
@@ -363,10 +393,10 @@ void thatsOutput(char **ptr, int wordAmount)
                 }
                 if (flag2)
                 {
-                    if (strncmp(&word[len - 2], "\"", 1) == 0)
+                    if (strncmp(&word[len - 2], "\"", 1) == 0 || strncmp(&word[len - 1], "\"", "") == 0)
                     {
-                        word[strlen(word) - 1] = '\0';
-                        fprintf(fp, "%s is a string constant.\nSeperator.\n", word);
+                        word[len - 1] = '\0';
+                        fprintf(fp, "%s\" is a string constant.\nSeperator.\n", word);
                         flag2 = false;
                         break;
                     }
@@ -383,10 +413,11 @@ void thatsOutput(char **ptr, int wordAmount)
         }
         else
         {
-            printf("Expected string, integer or variable, found %s.\n", word);
+            //printf("There may be problem with the output. Please check project report (page:)\n");
         }
         counter++;
     }
+
     if (counter == wordAmount)
     {
         fprintf(fp, "'.' is end of line.\n\n");
