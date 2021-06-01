@@ -4,13 +4,13 @@
 #include <stdlib.h>
 #include <assert.h>
 
-void parse(char *code);
-void ignoreComments(char *code);
 bool seperator(char *str);
 bool variableCheck(char *str);
 bool keywordCheck(char *str);
 bool integerCheck(char *str);
 bool integerVariableCheck(char *str);
+void parse(char *code);
+void ignoreComments(char *str);
 void thatsAnInteger(char *word, int wordAmount);
 void thatsMove(char *word1, char *word2, char *word3, int wordAmount);
 void thatsAdd(char *word1, char *word2, char *word3, int wordAmount);
@@ -18,6 +18,8 @@ void thatsSub(char *word1, char *word2, char *word3, int wordAmount);
 void thatsOutput(char **ptr, int wordAmount);
 void thatsALoop(char *word1, char *word2, int wordAmount);
 void codeBlock(char **word, int wordAmount);
+void endBlock(char **word, int wordAmount);
+int substring(char *source, int from, int n, char *target);
 
 char *variables[512];
 int variableIndex = 0;
@@ -174,59 +176,116 @@ void parse(char *code)
             codeBlock(word, wordAmount);
             break;
         case 8:
-            endBlock();
+            endBlock(word, wordAmount);
             break;
         }
     }
 }
-void endBlock()
+void endBlock(char **word, int wordAmount)
 {
     FILE *fp;
     fp = fopen("anewliz.txt", "a");
-    fprintf(fp, "codeBlock'tan ciktik.\n\n");
-}
-void codeBlock(char **word, int wordAmount)
-{
-    FILE *fp;
-    fp = fopen("anewliz.txt", "a");
-    fprintf(fp, "codeBlock'a girdik.\n\n");
-
+    fprintf(fp, "Exit from codeBlock.\n\n");
+    bool flag = false;
     int k = 1;
-    char newCode[100] = "";
+
     while (word[k] != NULL)
     {
         char *str = word[k];
         k++;
         if (!strcmp(str, "int"))
         {
-            printf("WERE IN INTEGER.\n", wordAmount);
+            //printf("WERE IN INTEGER.\n", wordAmount);
             thatsAnInteger(word[2], wordAmount - 1);
         }
         else if (!strcmp(str, "move"))
         {
-            printf("WERE IN MOVE.\n");
+            //printf("WERE IN MOVE.\n");
             thatsMove(word[k], word[k + 1], word[k + 2], wordAmount - 1);
         }
         else if (!strcmp(str, "add"))
         {
-            printf("WERE IN ADD.\n");
+            //printf("WERE IN ADD.\n");
             thatsAdd(word[k], word[k + 1], word[k + 2], wordAmount - 1);
         }
         else if (!strcmp(str, "sub"))
         {
-            printf("WERE IN SUB.\n");
+            //printf("WERE IN SUB.\n");
             thatsSub(word[k], word[k + 1], word[k + 2], wordAmount - 1);
         }
         else if (!strcmp(str, "loop"))
         {
-            printf("WERE IN LOOP.\n");
-            printf("word[k]:%s word[k+1]:%s wordAmount-1:%d", word[k], word[k + 1], wordAmount - 1);
+            //printf("WERE IN LOOP.\n");
             thatsALoop(word[k], word[k + 1], wordAmount - 1);
         }
         else if (!strcmp(str, "out"))
         {
-            printf("WERE IN OUT.\n");
+            //printf("WERE IN OUT.\n");
             thatsOutput(word, wordAmount);
+        }
+        else if (!keywordCheck(word[1]))
+        {
+            if (flag)
+                continue;
+            printf("%s is not a keyword. Rest of the line can not be parsed.\n", word[1]);
+            flag = true;
+        }
+        else
+        {
+            printf("");
+        }
+    }
+}
+void codeBlock(char **word, int wordAmount)
+{
+    FILE *fp;
+    fp = fopen("anewliz.txt", "a");
+    fprintf(fp, "Entering codeBlock.\n\n");
+
+    bool flag = false;
+    int k = 1;
+
+    while (word[k] != NULL)
+    {
+        char *str = word[k];
+        k++;
+        if (!strcmp(str, "int"))
+        {
+            //printf("WERE IN INTEGER.\n", wordAmount);
+            thatsAnInteger(word[2], wordAmount - 1);
+        }
+        else if (!strcmp(str, "move"))
+        {
+            //printf("WERE IN MOVE.\n");
+            thatsMove(word[k], word[k + 1], word[k + 2], wordAmount - 1);
+        }
+        else if (!strcmp(str, "add"))
+        {
+            //printf("WERE IN ADD.\n");
+            thatsAdd(word[k], word[k + 1], word[k + 2], wordAmount - 1);
+        }
+        else if (!strcmp(str, "sub"))
+        {
+            //printf("WERE IN SUB.\n");
+            thatsSub(word[k], word[k + 1], word[k + 2], wordAmount - 1);
+        }
+        else if (!strcmp(str, "loop"))
+        {
+            //printf("WERE IN LOOP.\n");
+            thatsALoop(word[k], word[k + 1], wordAmount - 1);
+        }
+        else if (!strcmp(str, "out"))
+        {
+            //printf("WERE IN OUT.\n");
+            thatsOutput(word, wordAmount);
+        }
+        else if (!keywordCheck(word[1]))
+        {
+            if (flag)
+                continue;
+            printf("%s is not a keyword. Rest of the line can not be parsed.\n", word[1]);
+            printf("See report for more information.(page:)\n");
+            flag = true;
         }
         else
         {
@@ -363,6 +422,12 @@ void thatsOutput(char **ptr, int wordAmount)
                             flag2 = false;
                             break;
                         }
+                        else
+                        {
+                            word[len - 1] = '\0';
+                            printf("String constant started, but not terminated. Word:%s\n", word);
+                            break;
+                        }
                         fprintf(fp, "%s ", word);
                     }
                     counter2++;
@@ -399,6 +464,11 @@ void thatsOutput(char **ptr, int wordAmount)
                         word[len - 1] = '\0';
                         fprintf(fp, "%s\" is a string constant.\nSeperator.\n", word);
                         flag2 = false;
+                        break;
+                    }
+                    else if (!isalpha(word[len + 1]))
+                    {
+                        printf("String constant started, but not terminated. Word:%s\n", word);
                         break;
                     }
                     fprintf(fp, "%s ", word);
@@ -738,7 +808,7 @@ void thatsAnInteger(char *word, int wordAmount)
     }
     else
     {
-        printf("Expected variable, found %s.\n", word);
+        printf("Expected variable, found a variable with unrecognised character: %s.\n", word);
         return 0;
     }
 
@@ -751,6 +821,63 @@ void thatsAnInteger(char *word, int wordAmount)
         printf("End of line is expected.\n");
         return 0;
     }
+}
+
+char commentLine[100];
+char a[100];
+char b[100];
+void ignoreComments(char *str)
+{
+    bool trueComment = false;
+    int j;
+    for (int i = 0; i < strlen(str); i++)
+    {
+        if (str[i] == '{')
+        {
+            for (j = i; j < strlen(str); j++)
+            {
+                if (str[j] == '}')
+                {
+                    substring(str, i + 1, j - i - 1, commentLine);
+                    printf("Comment Line: '%s'\n", commentLine);
+
+                    substring(str, 0, i, a);
+                    substring(str, j + 1, strlen(str), b);
+                    strcat(a, b);
+                    strcpy(str, a);
+
+                    trueComment = true;
+
+                    ignoreComments(str);
+                }
+            }
+            if (!trueComment)
+            {
+                printf("Comment Line is not completed.\n");
+            }
+        }
+    }
+}
+int substring(char *source, int from, int n, char *target)
+{
+    int length, i;
+    for (length = 0; source[length] != '\0'; length++)
+        ;
+    if (from > length)
+    {
+        printf("Starting index is invalid.\n");
+        return 1;
+    }
+    if ((from + n) > length)
+    {
+        n = (length - from);
+    }
+    for (i = 0; i < n; i++)
+    {
+        target[i] = source[from + i];
+    }
+    target[i] = '\0';
+    return 0;
 }
 
 int main()
@@ -779,5 +906,6 @@ int main()
         fclose(filePointer), free(code), fputs("entire read fails", stderr), exit(1);
     }
 
+    ignoreComments(code);
     parse(code);
 }
