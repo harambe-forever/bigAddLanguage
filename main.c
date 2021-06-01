@@ -10,14 +10,14 @@ bool integerCheck(char *str);
 bool integerVariableCheck(char *str);
 void parse(char *code);
 void ignoreComments(char *str);
-void thatsAnInteger(char *word, int wordAmount);
-void thatsMove(char *word1, char *word2, char *word3, int wordAmount);
-void thatsAdd(char *word1, char *word2, char *word3, int wordAmount);
-void thatsSub(char *word1, char *word2, char *word3, int wordAmount);
-void thatsOutput(char **ptr, int wordAmount);
-void thatsALoop(char *word1, char *word2, int wordAmount);
-void codeBlock(char **word, int wordAmount);
-void endBlock(char **word, int wordAmount);
+void thatsAnInteger(char *word, int wordAmount, int line);
+void thatsMove(char *word1, char *word2, char *word3, int wordAmount, int line);
+void thatsAdd(char *word1, char *word2, char *word3, int wordAmount, int line);
+void thatsSub(char *word1, char *word2, char *word3, int wordAmount, int line);
+void thatsOutput(char **ptr, int wordAmount, int line);
+void thatsALoop(char *word1, char *word2, int wordAmount, int line);
+void codeBlock(char **word, int wordAmount, int line);
+void endBlock(char **word, int wordAmount, int line);
 int substring(char *source, int from, int n, char *target);
 
 char *variables[512];
@@ -154,37 +154,37 @@ void parse(char *code)
             printf("Character Not Recognized.\n");
             break;
         case 1: //int
-            thatsAnInteger(word[1], wordAmount);
+            thatsAnInteger(word[1], wordAmount, i + 1);
             break;
         case 2: //move
-            thatsMove(word[1], word[2], word[3], wordAmount);
+            thatsMove(word[1], word[2], word[3], wordAmount, i + 1);
             break;
         case 3: //add
-            thatsAdd(word[1], word[2], word[3], wordAmount);
+            thatsAdd(word[1], word[2], word[3], wordAmount, i + 1);
             break;
         case 4: //sub
-            thatsSub(word[1], word[2], word[3], wordAmount);
+            thatsSub(word[1], word[2], word[3], wordAmount, i + 1);
             break;
         case 5: //out
-            thatsOutput(word, wordAmount);
+            thatsOutput(word, wordAmount, i + 1);
             break;
         case 6: //loop
-            thatsALoop(word[1], word[2], wordAmount);
+            thatsALoop(word[1], word[2], wordAmount, i + 1);
             break;
         case 7:
-            codeBlock(word, wordAmount);
+            codeBlock(word, wordAmount, i + 1);
             break;
         case 8:
-            endBlock(word, wordAmount);
+            endBlock(word, wordAmount, i + 1);
             break;
         }
     }
 }
-void endBlock(char **word, int wordAmount)
+void endBlock(char **word, int wordAmount, int line)
 {
     FILE *fp;
     fp = fopen("myscript.lx", "a");
-    fprintf(fp, "Exit from codeBlock.\n\n");
+    fprintf(fp, "Exit from codeBlock.\n");
     bool flag = false;
     int k = 1;
 
@@ -195,38 +195,38 @@ void endBlock(char **word, int wordAmount)
         if (!strcmp(str, "int"))
         {
             //printf("WERE IN INTEGER.\n", wordAmount);
-            thatsAnInteger(word[2], wordAmount - 1);
+            thatsAnInteger(word[2], wordAmount - 1, line);
         }
         else if (!strcmp(str, "move"))
         {
             //printf("WERE IN MOVE.\n");
-            thatsMove(word[k], word[k + 1], word[k + 2], wordAmount - 1);
+            thatsMove(word[k], word[k + 1], word[k + 2], wordAmount - 1, line);
         }
         else if (!strcmp(str, "add"))
         {
             //printf("WERE IN ADD.\n");
-            thatsAdd(word[k], word[k + 1], word[k + 2], wordAmount - 1);
+            thatsAdd(word[k], word[k + 1], word[k + 2], wordAmount - 1, line);
         }
         else if (!strcmp(str, "sub"))
         {
             //printf("WERE IN SUB.\n");
-            thatsSub(word[k], word[k + 1], word[k + 2], wordAmount - 1);
+            thatsSub(word[k], word[k + 1], word[k + 2], wordAmount - 1, line);
         }
         else if (!strcmp(str, "loop"))
         {
             //printf("WERE IN LOOP.\n");
-            thatsALoop(word[k], word[k + 1], wordAmount - 1);
+            thatsALoop(word[k], word[k + 1], wordAmount - 1, line);
         }
         else if (!strcmp(str, "out"))
         {
             //printf("WERE IN OUT.\n");
-            thatsOutput(word, wordAmount);
+            thatsOutput(word, wordAmount, line);
         }
         else if (!keywordCheck(word[1]))
         {
             if (flag)
                 continue;
-            printf("%s is not a keyword. Rest of the line can not be parsed.\n", word[1]);
+            printf("Line:%d. %s is not a keyword. Rest of the line can not be parsed.\n", line, word[1]);
             flag = true;
         }
         else
@@ -235,11 +235,12 @@ void endBlock(char **word, int wordAmount)
         }
     }
 }
-void codeBlock(char **word, int wordAmount)
+
+void codeBlock(char **word, int wordAmount, int line)
 {
     FILE *fp;
     fp = fopen("myscript.lx", "a");
-    fprintf(fp, "Entering codeBlock.\n\n");
+    fprintf(fp, "Entering codeBlock.\n");
 
     bool flag = false;
     int k = 1;
@@ -251,38 +252,38 @@ void codeBlock(char **word, int wordAmount)
         if (!strcmp(str, "int"))
         {
             //printf("WERE IN INTEGER.\n", wordAmount);
-            thatsAnInteger(word[2], wordAmount - 1);
+            thatsAnInteger(word[2], wordAmount - 1, line);
         }
         else if (!strcmp(str, "move"))
         {
             //printf("WERE IN MOVE.\n");
-            thatsMove(word[k], word[k + 1], word[k + 2], wordAmount - 1);
+            thatsMove(word[k], word[k + 1], word[k + 2], wordAmount - 1, line);
         }
         else if (!strcmp(str, "add"))
         {
             //printf("WERE IN ADD.\n");
-            thatsAdd(word[k], word[k + 1], word[k + 2], wordAmount - 1);
+            thatsAdd(word[k], word[k + 1], word[k + 2], wordAmount - 1, line);
         }
         else if (!strcmp(str, "sub"))
         {
             //printf("WERE IN SUB.\n");
-            thatsSub(word[k], word[k + 1], word[k + 2], wordAmount - 1);
+            thatsSub(word[k], word[k + 1], word[k + 2], wordAmount - 1, line);
         }
         else if (!strcmp(str, "loop"))
         {
             //printf("WERE IN LOOP.\n");
-            thatsALoop(word[k], word[k + 1], wordAmount - 1);
+            thatsALoop(word[k], word[k + 1], wordAmount - 1, line);
         }
         else if (!strcmp(str, "out"))
         {
             //printf("WERE IN OUT.\n");
-            thatsOutput(word, wordAmount);
+            thatsOutput(word, wordAmount, line);
         }
         else if (!keywordCheck(word[1]))
         {
             if (flag)
                 continue;
-            printf("%s is not a keyword. Rest of the line can not be parsed.\n", word[1]);
+            printf("Line:%d. %s is not a keyword. Rest of the line can not be parsed.\n", line, word[1]);
             printf("See report for more information.(page:)\n");
             flag = true;
         }
@@ -293,7 +294,7 @@ void codeBlock(char **word, int wordAmount)
     }
 }
 
-void thatsALoop(char *word1, char *word2, int wordAmount)
+void thatsALoop(char *word1, char *word2, int wordAmount, int line)
 {
     FILE *fp;
     fp = fopen("myscript.lx", "a");
@@ -320,17 +321,17 @@ void thatsALoop(char *word1, char *word2, int wordAmount)
     }
     else if (keywordCheck(word1))
     {
-        printf("Expected integer or variable, found keyword.\n");
+        printf("Line:%d. Expected integer or variable, found keyword.\n", line);
         return 0;
     }
     else if (word1 == NULL)
     {
-        printf("Expected integer or variable, found NULL.\n");
+        printf("Line:%d. Expected integer or variable, found NULL.\n", line);
         return 0;
     }
     else
     {
-        printf("Expected integer or variable, found %s.\n", word1);
+        printf("Line:%d. Expected integer or variable, found %s.\n", line, word1);
         return 0;
     }
 
@@ -340,12 +341,12 @@ void thatsALoop(char *word1, char *word2, int wordAmount)
     }
     else if (word2 == NULL)
     {
-        printf("Expected keyword \"times\", found NULL.\n");
+        printf("Line:%d. Expected keyword \"times\", found NULL.\n", line);
         return 0;
     }
     else
     {
-        printf("Expected keyword \"times\", found %s.\n", word2);
+        printf("Line:%d. Expected keyword \"times\", found %s.\n", line, word2);
         return 0;
     }
 
@@ -355,20 +356,21 @@ void thatsALoop(char *word1, char *word2, int wordAmount)
     }
     else
     {
-        printf("End of line is expected.\n");
+        printf("Line:%d. End of line is expected.\n", line);
         return 0;
     }
 }
 
-void thatsOutput(char **ptr, int wordAmount)
+void thatsOutput(char **ptr, int wordAmount, int line)
 {
     FILE *fp;
     fp = fopen("myscript.lx", "a");
     fprintf(fp, "out is a keyword.\n");
 
     bool flag = true;
+    bool flag2 = false;
     int counter = 1;
-
+    int constCounter;
     while (counter != wordAmount)
     {
         char *word = ptr[counter];
@@ -402,7 +404,7 @@ void thatsOutput(char **ptr, int wordAmount)
             {
                 int counter2 = 0;
                 int len;
-                bool flag2 = false;
+                flag2 = false;
                 while (ptr[counter2] != NULL)
                 {
                     char *word = ptr[counter2];
@@ -424,7 +426,7 @@ void thatsOutput(char **ptr, int wordAmount)
                         else
                         {
                             word[len - 1] = '\0';
-                            printf("String constant started, but not terminated. Word:%s\n", word);
+                            printf("Line:%d. String constant started, but not terminated. Word:%s\n", line, word);
                             break;
                         }
                         fprintf(fp, "%s ", word);
@@ -435,8 +437,8 @@ void thatsOutput(char **ptr, int wordAmount)
             }
             else
             {
-                printf("Expected string, integer or variable, found %s.\n", word);
-                continue;
+                printf("Line: %d. %s is not a declared variable.\n", line, word);
+                //continue;
             }
         }
         else if (!strcmp(word, "newline"))
@@ -447,7 +449,7 @@ void thatsOutput(char **ptr, int wordAmount)
         {
             int counter2 = 0;
             int len;
-            bool flag2 = false;
+            flag2 = false;
             while (ptr[counter2] != NULL)
             {
                 char *word = ptr[counter2];
@@ -455,9 +457,12 @@ void thatsOutput(char **ptr, int wordAmount)
                 if (strncmp(word, "\"", 1) == 0)
                 {
                     flag2 = true;
+                    constCounter = 0;
                 }
                 if (flag2)
                 {
+                    constCounter++;
+                    //printf("word:%s counter:%d\n", word, constCounter);
                     if (strncmp(&word[len - 2], "\"", 1) == 0 || strncmp(&word[len - 1], "\"", "") == 0)
                     {
                         word[len - 1] = '\0';
@@ -467,7 +472,7 @@ void thatsOutput(char **ptr, int wordAmount)
                     }
                     else if (!isalpha(word[len + 1]))
                     {
-                        printf("String constant started, but not terminated. Word:%s\n", word);
+                        printf("Line:%d. String constant started, but not terminated. Word:%s\n", line, word);
                         break;
                     }
                     fprintf(fp, "%s ", word);
@@ -478,12 +483,22 @@ void thatsOutput(char **ptr, int wordAmount)
         }
         else if (word == NULL)
         {
-            printf("Integer, variable, or string are excepted.\n");
+            printf("Line:%d. Integer, variable, or string are excepted\n", line);
+            return 0;
+        }
+        else if (keywordCheck(word))
+        {
+            //out statement can not contain multiple keywords
+        }
+        else if (flag == false && constCounter == 2)
+        {
+            printf("Line: %d. %s is not a declared variable.\n", line, word);
             return 0;
         }
         else
         {
-            //printf("There may be problem with the output. Please check project report (page:)\n");
+            printf("");
+            return 0;
         }
         counter++;
     }
@@ -494,11 +509,11 @@ void thatsOutput(char **ptr, int wordAmount)
     }
     else
     {
-        printf("End of line is expected.\n");
+        printf("Line:%d. End of line is expected.\n", line);
     }
 }
 
-void thatsSub(char *word1, char *word2, char *word3, int wordAmount)
+void thatsSub(char *word1, char *word2, char *word3, int wordAmount, int line)
 {
     FILE *fp;
     fp = fopen("myscript.lx", "a");
@@ -525,17 +540,17 @@ void thatsSub(char *word1, char *word2, char *word3, int wordAmount)
     }
     else if (keywordCheck(word1))
     {
-        printf("Expected integer or variable, found keyword.\n");
+        printf("Line:%d. Expected integer or variable, found keyword.\n", line);
         return 0;
     }
     else if (word1 == NULL)
     {
-        printf("Expected integer or variable, found NULL.\n");
+        printf("Line:%d. Expected integer or variable, found NULL.\n", line);
         return 0;
     }
     else
     {
-        printf("Expected integer or variable, found %s.\n", word1);
+        printf("Line:%d. Expected integer or variable, found %s.\n", line, word1);
         return 0;
     }
 
@@ -545,12 +560,12 @@ void thatsSub(char *word1, char *word2, char *word3, int wordAmount)
     }
     else if (word2 == NULL)
     {
-        printf("Expected keyword \"from\", found NULL.\n");
+        printf("Line:%d. Expected keyword \"from\", found NULL.\n", line);
         return 0;
     }
     else
     {
-        printf("Expected keyword \"from\", found %s", word2);
+        printf("Line:%d. Expected keyword \"from\", found %s", line, word2);
         return 0;
     }
 
@@ -569,17 +584,17 @@ void thatsSub(char *word1, char *word2, char *word3, int wordAmount)
     }
     else if (keywordCheck(word3))
     {
-        printf("Expected variable, found keyword.\n");
+        printf("Line:%d. Expected variable, found keyword.\n", line);
         return 0;
     }
     else if (word3 == NULL)
     {
-        printf("Expected variable, found NULL.\n");
+        printf("Line:%d. Expected variable, found NULL.\n", line);
         return 0;
     }
     else
     {
-        printf("Expected variable, found %s.\n", word3);
+        printf("Line:%d. %s is not a declared variable.\n", line, word3);
         return 0;
     }
 
@@ -589,12 +604,12 @@ void thatsSub(char *word1, char *word2, char *word3, int wordAmount)
     }
     else
     {
-        printf("End of line is expected.\n");
+        printf("Line:%d. End of line is expected.\n", line);
         return 0;
     }
 }
 
-void thatsAdd(char *word1, char *word2, char *word3, int wordAmount)
+void thatsAdd(char *word1, char *word2, char *word3, int wordAmount, int line)
 {
     FILE *fp;
     fp = fopen("myscript.lx", "a");
@@ -621,17 +636,17 @@ void thatsAdd(char *word1, char *word2, char *word3, int wordAmount)
     }
     else if (keywordCheck(word1))
     {
-        printf("Expected integer or variable, found keyword.\n");
+        printf("Line:%d. Expected integer or variable, found keyword.\n", line);
         return 0;
     }
     else if (word1 == NULL)
     {
-        printf("Expected integer or variable, found NULL.\n");
+        printf("Line:%d. Expected integer or variable, found NULL.\n", line);
         return 0;
     }
     else
     {
-        printf("Expected integer or variable, found %s.\n", word1);
+        printf("Line:%d. Expected integer or variable, found %s.\n", line, word1);
         return 0;
     }
 
@@ -641,12 +656,12 @@ void thatsAdd(char *word1, char *word2, char *word3, int wordAmount)
     }
     else if (word2 == NULL)
     {
-        printf("Expected keyword \"to\", found NULL.\n");
+        printf("Line:%d. Expected keyword \"to\", found NULL.\n", line);
         return 0;
     }
     else
     {
-        printf("Expected keyword \"to\", found %s.\n", word2);
+        printf("Line:%d. Expected keyword \"to\", found %s.\n", line, word2);
         return 0;
     }
 
@@ -665,17 +680,17 @@ void thatsAdd(char *word1, char *word2, char *word3, int wordAmount)
     }
     else if (keywordCheck(word3))
     {
-        printf("Expected variable, found keyword.\n");
+        printf("Line:%d. Expected variable, found keyword.\n", line);
         return 0;
     }
     else if (word3 == NULL)
     {
-        printf("Expected variable, found NULL.\n");
+        printf("Line:%d. Expected variable, found NULL.\n", line);
         return 0;
     }
     else
     {
-        printf("Expected variable, found %s.\n", word3);
+        printf("Line:%d. %s is not a declared variable.\n", line, word3);
         return 0;
     }
     if (wordAmount == 4)
@@ -684,12 +699,12 @@ void thatsAdd(char *word1, char *word2, char *word3, int wordAmount)
     }
     else
     {
-        printf("End of line is expected.\n");
+        printf("Line:%d. End of line is expected.\n", line);
         return 0;
     }
 }
 
-void thatsMove(char *word1, char *word2, char *word3, int wordAmount)
+void thatsMove(char *word1, char *word2, char *word3, int wordAmount, int line)
 {
     FILE *fp;
     fp = fopen("myscript.lx", "a");
@@ -716,17 +731,18 @@ void thatsMove(char *word1, char *word2, char *word3, int wordAmount)
     }
     else if (keywordCheck(word1))
     {
-        printf("%s Expected integer or variable, found keyword.\n");
+        printf("Line:%d. %s Expected integer or variable, found keyword.\n", line, word1);
         return 0;
     }
     else if (word1 == NULL)
     {
-        printf("Expected integer or variable, found NULL.");
+        printf("Line:%d. Expected integer or variable, found NULL.", line);
         return 0;
     }
     else
     {
-        printf("Expected integer or variable, found %s.\n", word1);
+        printf("Line:%d. Expected integer or variable, found %s.\n", line, word1);
+        return 0;
     }
 
     if (!strcmp(word2, "to"))
@@ -735,12 +751,12 @@ void thatsMove(char *word1, char *word2, char *word3, int wordAmount)
     }
     else if (word2 == NULL)
     {
-        printf("Expected keyword \"to\", found NULL.");
+        printf("Line:%d. Expected keyword \"to\", found NULL.", line);
         return 0;
     }
     else
     {
-        printf("Expected keyword \"to\", found %s.\n", word2);
+        printf("Line:%d. Expected keyword \"to\", found %s.\n", line, word2);
         return 0;
     }
 
@@ -759,17 +775,17 @@ void thatsMove(char *word1, char *word2, char *word3, int wordAmount)
     }
     else if (keywordCheck(word3))
     {
-        printf("Expected variable, found keyword.\n");
+        printf("Line:%d. Expected variable, found keyword.\n", line);
         return 0;
     }
     else if (word3 == NULL)
     {
-        printf("Expected variable, found NULL.");
+        printf("Line:%d. Expected variable, found NULL.", line);
         return 0;
     }
     else
     {
-        printf("Expected variable, found %s.\n", word3);
+        printf("Line:%d. %s is not a declared variable.\n", line, word3);
         return 0;
     }
 
@@ -779,12 +795,12 @@ void thatsMove(char *word1, char *word2, char *word3, int wordAmount)
     }
     else
     {
-        printf("End of line is expected.\n");
+        printf("Line:%d. End of line is expected.\n", line);
         return 0;
     }
 }
 
-void thatsAnInteger(char *word, int wordAmount)
+void thatsAnInteger(char *word, int wordAmount, int line)
 {
     FILE *fp;
     fp = fopen("myscript.lx", "a");
@@ -797,17 +813,17 @@ void thatsAnInteger(char *word, int wordAmount)
     }
     else if (keywordCheck(word))
     {
-        printf("%s Expected variable, found keyword.\n", word);
+        printf("Line:%d. %s Expected variable, found keyword.\n", line, word);
         return 0;
     }
     else if (word == NULL)
     {
-        printf("Expected variable, found NULL.\n");
+        printf("Line:%d. Expected variable, found NULL.\n", line);
         return 0;
     }
     else
     {
-        printf("Expected variable, found a variable with unrecognised character: %s.\n", word);
+        printf("Line:%d. Expected variable, found a wrongly declared variable or variable with unrecognized character:%s.\n", line, word);
         return 0;
     }
 
@@ -817,7 +833,7 @@ void thatsAnInteger(char *word, int wordAmount)
     }
     else
     {
-        printf("End of line is expected.\n");
+        printf("Line:%d. End of line is expected.\n", line);
         return 0;
     }
 }
@@ -886,7 +902,6 @@ int main()
 
     printf("Give a file name to open(without extension):\n");
     scanf("%s", fileName);
-    printf("%s", fileName);
     strcat(fileName, ".ba");
 
     FILE *fp;
