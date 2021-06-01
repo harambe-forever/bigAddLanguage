@@ -2,7 +2,6 @@
 #include <stdbool.h>
 #include <string.h>
 #include <stdlib.h>
-#include <assert.h>
 
 bool seperator(char *str);
 bool variableCheck(char *str);
@@ -184,7 +183,7 @@ void parse(char *code)
 void endBlock(char **word, int wordAmount)
 {
     FILE *fp;
-    fp = fopen("anewliz.txt", "a");
+    fp = fopen("myscript.lx", "a");
     fprintf(fp, "Exit from codeBlock.\n\n");
     bool flag = false;
     int k = 1;
@@ -239,7 +238,7 @@ void endBlock(char **word, int wordAmount)
 void codeBlock(char **word, int wordAmount)
 {
     FILE *fp;
-    fp = fopen("anewliz.txt", "a");
+    fp = fopen("myscript.lx", "a");
     fprintf(fp, "Entering codeBlock.\n\n");
 
     bool flag = false;
@@ -297,7 +296,7 @@ void codeBlock(char **word, int wordAmount)
 void thatsALoop(char *word1, char *word2, int wordAmount)
 {
     FILE *fp;
-    fp = fopen("anewliz.txt", "a");
+    fp = fopen("myscript.lx", "a");
     fprintf(fp, "loop is a keyword.\n");
 
     int i = 0; //loop amount
@@ -364,7 +363,7 @@ void thatsALoop(char *word1, char *word2, int wordAmount)
 void thatsOutput(char **ptr, int wordAmount)
 {
     FILE *fp;
-    fp = fopen("anewliz.txt", "a");
+    fp = fopen("myscript.lx", "a");
     fprintf(fp, "out is a keyword.\n");
 
     bool flag = true;
@@ -502,7 +501,7 @@ void thatsOutput(char **ptr, int wordAmount)
 void thatsSub(char *word1, char *word2, char *word3, int wordAmount)
 {
     FILE *fp;
-    fp = fopen("anewliz.txt", "a");
+    fp = fopen("myscript.lx", "a");
     fprintf(fp, "sub is a keyword.\n");
 
     int i = 0; //to downcast a str int to int int
@@ -598,7 +597,7 @@ void thatsSub(char *word1, char *word2, char *word3, int wordAmount)
 void thatsAdd(char *word1, char *word2, char *word3, int wordAmount)
 {
     FILE *fp;
-    fp = fopen("anewliz.txt", "a");
+    fp = fopen("myscript.lx", "a");
     fprintf(fp, "add is a keyword.\n");
 
     int i = 0; //to downcast a str int to int int
@@ -693,7 +692,7 @@ void thatsAdd(char *word1, char *word2, char *word3, int wordAmount)
 void thatsMove(char *word1, char *word2, char *word3, int wordAmount)
 {
     FILE *fp;
-    fp = fopen("anewliz.txt", "a");
+    fp = fopen("myscript.lx", "a");
     fprintf(fp, "move is a keyword.\n");
 
     int i = 0; //to see if what's coming next is integer or variable
@@ -788,7 +787,7 @@ void thatsMove(char *word1, char *word2, char *word3, int wordAmount)
 void thatsAnInteger(char *word, int wordAmount)
 {
     FILE *fp;
-    fp = fopen("anewliz.txt", "a");
+    fp = fopen("myscript.lx", "a");
     fprintf(fp, "int is a keyword.\n");
     if (variableCheck(word))
     {
@@ -882,16 +881,24 @@ int substring(char *source, int from, int n, char *target)
 
 int main()
 {
+    char *fileName;
+    fileName = malloc(300 * sizeof(char));
+
+    printf("Give a file name to open(without extension):\n");
+    scanf("%s", fileName);
+    printf("%s", fileName);
+    strcat(fileName, ".ba");
+
     FILE *fp;
-    fp = fopen("anewliz.txt", "w");
+    fp = fopen("myscript.lx", "w");
     fprintf(fp, "");
     FILE *filePointer;
     long lineSize;
     char *code;
 
-    filePointer = fopen("zort.txt", "rb");
+    filePointer = fopen(fileName, "rb");
     if (!filePointer)
-        perror("zort.txt"), exit(1);
+        perror(fileName), exit(1);
 
     fseek(filePointer, 0L, SEEK_END);
     lineSize = ftell(filePointer);
@@ -908,4 +915,7 @@ int main()
 
     ignoreComments(code);
     parse(code);
+    printf("\ndone.press enter to exit.\n");
+    getchar();
+    return 0;
 }
