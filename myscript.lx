@@ -1,0 +1,102 @@
+int is a keyword.
+size is an integer variable.
+'.' is end of line.
+
+int is a keyword.
+sum is an integer variable.
+'.' is end of line.
+
+move is a keyword.
+5 is an integer.
+to is a keyword.
+size is a variable.
+'.' is end of line.
+
+add is a keyword.
+10 is an integer.
+to is a keyword.
+size is a variable.
+'.' is end of line.
+
+loop is a keyword.
+size is a variable.
+times is a keyword.
+'.' is end of line.
+
+out is a keyword.
+newline is a keyword.
+Seperator
+"Sum:" is a string constant.
+Seperator.
+sum is a variable.
+'.' is end of line.
+
+out is a keyword.
+size is a variable.
+Seperator.
+sum is a variable.
+'.' is end of line.
+
+out is a keyword.
+5 is an integer.
+Seperator
+"Metallica" is a string constant.
+Seperator.
+sum is a variable.
+Seperator.
+size is a variable.
+'.' is end of line.
+
+loop is a keyword.
+3 is an integer.
+times is a keyword.
+'.' is end of line.
+
+Entering codeBlock.
+int is a keyword.
+zort is an integer variable.
+'.' is end of line.
+
+int is a keyword.
+pirt is an integer variable.
+'.' is end of line.
+
+loop is a keyword.
+4 is an integer.
+times is a keyword.
+'.' is end of line.
+
+Entering codeBlock.
+add is a keyword.
+5 is an integer.
+to is a keyword.
+pirt is a variable.
+'.' is end of line.
+
+out is a keyword.
+sum is a variable.
+'.' is end of line.
+
+Exit from codeBlock.
+out is a keyword.
+31 is an integer.
+Seperator
+"lorem ipsum dolor sit amet" is a string constant.
+Seperator.
+move is a keyword.
+zort is a variable.
+to is a keyword.
+pirt is a variable.
+'.' is end of line.
+
+Exit from codeBlock.
+int is a keyword.
+aq is an integer variable.
+'.' is end of line.
+
+move is a keyword.
+31 is an integer.
+to is a keyword.
+aq is a variable.
+'.' is end of line.
+
