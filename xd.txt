@@ -1,0 +1,21 @@
+int size.
+int sum.
+move 5 to size. {this is a comment
+}
+add 10 to size.
+loop size times.
+out newline, "Sum:", sum.
+out size, newline.
+out 5, "Metallica", sum.  { comment line }
+loop 3 times.
+[ int zort.
+int pirt.
+loop 4 times.
+[ add 5 to pirt.
+out sum.
+]
+out 31, "lorem ipsum dolor sit amet".
+move zort to pirt.
+]
+int aq.
+move 31 to aq.
