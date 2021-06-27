@@ -14,7 +14,7 @@ void thatsAnInteger(char *word, int wordAmount, int line);
 void thatsMove(char *word1, char *word2, char *word3, int wordAmount, int line);
 void thatsAdd(char *word1, char *word2, char *word3, int wordAmount, int line);
 void thatsSub(char *word1, char *word2, char *word3, int wordAmount, int line);
-void thatsOutput(char **ptr, int wordAmount, int line);
+void thatsOutput(char **word, int wordAmount, int line);
 void thatsALoop(char *word1, char *word2, int wordAmount, int line);
 void codeBlock(char **word, int wordAmount, int line);
 void endBlock(char **word, int wordAmount, int line);
@@ -61,12 +61,19 @@ bool integerCheck(char *str)
     int i;
     for (i = 0; i < strlen(str); i++)
     {
-        if (!(isdigit(str[i]) || str[i] == "-"))
-            return false;
+        if (i == 0)
+        {
+            if (atoi(str) < 0 && isdigit(str[1]) && strlen(str) > 1)
+            {
+                return true;
+            }
+        }
         if (i > 0)
         {
-            if (str[i] == "-" || strlen(str) == 1)
+            if (str[i] == "-" || strlen(str) == 1 || !isdigit(str[1]))
+            {
                 return false;
+            }
         }
     }
     return true;
@@ -151,7 +158,7 @@ void parse(char *code)
         switch (operator)
         {
         case 0:
-            printf("Character Not Recognized.\n");
+            printf("Line: %d started with wrong character: %s\n", i + 1, word[0]);
             break;
         case 1: //int
             thatsAnInteger(word[1], wordAmount, i + 1);
@@ -361,155 +368,72 @@ void thatsALoop(char *word1, char *word2, int wordAmount, int line)
     }
 }
 
-void thatsOutput(char **ptr, int wordAmount, int line)
+void thatsOutput(char **word, int wordAmount, int line)
 {
     FILE *fp;
     fp = fopen("myscript.lx", "a");
     fprintf(fp, "out is a keyword.\n");
+    bool strConstStart = false;
+    bool strConstEnd = false;
+    for (int i = 0; i < wordAmount; i++)
+    {
+        bool sep = false;
+        char *singleWord;
+        int wordLen;
+        char firstChar, lastChar;
+        singleWord = word[i];
+        wordLen = strlen(singleWord);
+        firstChar = singleWord[0];
+        lastChar = singleWord[wordLen - 1];
+        if (!strncmp(&lastChar, ",", 1))
+        {
+            sep = true;
+            singleWord[strlen(singleWord) - 1] = '\0';
+        }
 
-    bool flag = true;
-    bool flag2 = false;
-    int counter = 1;
-    int constCounter;
-    while (counter != wordAmount)
-    {
-        char *word = ptr[counter];
-        if (integerVariableCheck(word))
+        if (!strncmp(&firstChar, "\"", 1))
         {
-            fprintf(fp, "%s is a variable.\n", word);
+            strConstStart = true;
         }
-        else if (integerCheck(word))
+        if (strConstStart == true && strConstEnd == false)
         {
-            fprintf(fp, "%s is an integer.\n", word);
-        }
-        else if (seperator(word))
-        {
-            word[strlen(word) - 1] = '\0';
-            if (!strcmp(word, "newline"))
+            printf("%s ", singleWord);
+            if (!strncmp(&singleWord[wordLen - 2], "\"", 1))
             {
-                fprintf(fp, "newline is a keyword.\n");
-                fprintf(fp, "Seperator\n");
-            }
-            else if (integerVariableCheck(word))
-            {
-                fprintf(fp, "%s is a variable.\n", word);
-                fprintf(fp, "Seperator.\n");
-            }
-            else if (integerCheck(word))
-            {
-                fprintf(fp, "%s is an integer.\n", word);
-                fprintf(fp, "Seperator\n");
-            }
-            else if (strncmp(word, "\"", 1) == 0 && flag == true)
-            {
-                int counter2 = 0;
-                int len;
-                flag2 = false;
-                while (ptr[counter2] != NULL)
-                {
-                    char *word = ptr[counter2];
-                    strcat(word, ",");
-                    len = strlen(word);
-                    if (strncmp(word, "\"", 1) == 0)
-                    {
-                        flag2 = true;
-                    }
-                    if (flag2)
-                    {
-                        if (strncmp(&word[len - 2], "\"", 1) == 0)
-                        {
-                            word[len - 1] = '\0';
-                            fprintf(fp, "%s is a string constant.\nSeperator.\n", word);
-                            flag2 = false;
-                            break;
-                        }
-                        else
-                        {
-                            word[len - 1] = '\0';
-                            printf("Line:%d. String constant started, but not terminated. Word:%s\n", line, word);
-                            break;
-                        }
-                        fprintf(fp, "%s ", word);
-                    }
-                    counter2++;
-                }
-                flag = false;
-            }
-            else
-            {
-                printf("Line: %d. %s is not a declared variable.\n", line, word);
-                //continue;
+                strConstEnd = true;
+                printf("\n");
             }
         }
-        else if (!strcmp(word, "newline"))
+        if (singleWord == NULL)
         {
-            fprintf(fp, "newline is a keyword.\n");
-        }
-        else if (strncmp(word, "\"", 1) == 0 && flag == true)
-        {
-            int counter2 = 0;
-            int len;
-            flag2 = false;
-            while (ptr[counter2] != NULL)
-            {
-                char *word = ptr[counter2];
-                len = strlen(word);
-                if (strncmp(word, "\"", 1) == 0)
-                {
-                    flag2 = true;
-                    constCounter = 0;
-                }
-                if (flag2)
-                {
-                    constCounter++;
-                    //printf("word:%s counter:%d\n", word, constCounter);
-                    if (strncmp(&word[len - 2], "\"", 1) == 0 || strncmp(&word[len - 1], "\"", "") == 0)
-                    {
-                        word[len - 1] = '\0';
-                        fprintf(fp, "%s\" is a string constant.\nSeperator.\n", word);
-                        flag2 = false;
-                        break;
-                    }
-                    else if (!isalpha(word[len + 1]))
-                    {
-                        printf("Line:%d. String constant started, but not terminated. Word:%s\n", line, word);
-                        break;
-                    }
-                    fprintf(fp, "%s ", word);
-                }
-                counter2++;
-            }
-            flag = false;
-        }
-        else if (word == NULL)
-        {
-            printf("Line:%d. Integer, variable, or string are excepted\n", line);
+            printf("Integer, variable or string are expected.\n");
             return 0;
         }
-        else if (keywordCheck(word))
+        else if (!strncmp(singleWord, "newline", 1))
         {
-            //out statement can not contain multiple keywords
+            printf("\n");
         }
-        else if (flag == false && constCounter == 2)
+        else if (integerCheck(singleWord))
         {
-            printf("Line: %d. %s is not a declared variable.\n", line, word);
-            return 0;
+            //printf("'%s' is an integer.\n", singleWord);
+            printf("Integer Value: %s\n", singleWord);
         }
-        else
+        else if (integerVariableCheck(singleWord))
         {
-            printf("");
-            return 0;
+            //printf("'%s' is a variable.\n", singleWord);
+            for (int i = 0; i < variableIndex; i++)
+            {
+                if (!strcmp(variables[i], singleWord))
+                {
+                    printf("'%s' variable value: %i\n", singleWord, integers[i]);
+                    break;
+                }
+            }
         }
-        counter++;
     }
-
-    if (counter == wordAmount)
+    if (strConstStart == true && strConstEnd == false)
     {
-        fprintf(fp, "'.' is end of line.\n\n");
-    }
-    else
-    {
-        printf("Line:%d. End of line is expected.\n", line);
+        printf("String Constant Not Terminated.\n");
     }
 }
 
@@ -741,7 +665,7 @@ void thatsMove(char *word1, char *word2, char *word3, int wordAmount, int line)
     }
     else
     {
-        printf("Line:%d. Expected integer or variable, found %s.\n", line, word1);
+        printf("Line:%d. Integer not declared in a correct way: %s.\n", line, word1);
         return 0;
     }
 
