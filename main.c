@@ -15,7 +15,7 @@ void thatsMove(char *word1, char *word2, char *word3, int wordAmount, int line);
 void thatsAdd(char *word1, char *word2, char *word3, int wordAmount, int line);
 void thatsSub(char *word1, char *word2, char *word3, int wordAmount, int line);
 void thatsOutput(char **word, int wordAmount, int line);
-void thatsALoop(char *word1, char *word2, int wordAmount, int line);
+void thatsALoop(char **word, int wordAmount, int line);
 void codeBlock(char **word, int wordAmount, int line);
 void endBlock(char **word, int wordAmount, int line);
 int substring(char *source, int from, int n, char *target);
@@ -176,7 +176,7 @@ void parse(char *code)
             thatsOutput(word, wordAmount, i + 1);
             break;
         case 6: //loop
-            thatsALoop(word[1], word[2], wordAmount, i + 1);
+            thatsALoop(word, wordAmount, i + 1);
             break;
         case 7:
             codeBlock(word, wordAmount, i + 1);
@@ -222,7 +222,7 @@ void endBlock(char **word, int wordAmount, int line)
         else if (!strcmp(str, "loop"))
         {
             //printf("WERE IN LOOP.\n");
-            thatsALoop(word[k], word[k + 1], wordAmount - 1, line);
+            thatsALoop(word, wordAmount - 1, line);
         }
         else if (!strcmp(str, "out"))
         {
@@ -279,7 +279,7 @@ void codeBlock(char **word, int wordAmount, int line)
         else if (!strcmp(str, "loop"))
         {
             //printf("WERE IN LOOP.\n");
-            thatsALoop(word[k], word[k + 1], wordAmount - 1, line);
+            thatsALoop(word, wordAmount - 1, line);
         }
         else if (!strcmp(str, "out"))
         {
@@ -301,13 +301,14 @@ void codeBlock(char **word, int wordAmount, int line)
     }
 }
 
-void thatsALoop(char *word1, char *word2, int wordAmount, int line)
+void thatsALoop(char **word, int wordAmount, int line)
 {
     FILE *fp;
     fp = fopen("myscript.lx", "a");
     fprintf(fp, "loop is a keyword.\n");
-
-    int i = 0; //loop amount
+    char *word1 = word[1];
+    char *word2 = word[2];
+    int loopAmount = 0; //loop amount
     if (integerVariableCheck(word1))
     {
         fprintf(fp, "%s is a variable.\n", word1);
@@ -316,7 +317,7 @@ void thatsALoop(char *word1, char *word2, int wordAmount, int line)
         {
             if (!strcmp(variables[j], word1))
             {
-                i = integers[j];
+                loopAmount = integers[j];
                 break;
             }
         }
@@ -324,7 +325,7 @@ void thatsALoop(char *word1, char *word2, int wordAmount, int line)
     else if (integerCheck(word1))
     {
         fprintf(fp, "%s is an integer.\n", word1);
-        i = atoi(word1);
+        loopAmount = atoi(word1);
     }
     else if (keywordCheck(word1))
     {
@@ -356,18 +357,29 @@ void thatsALoop(char *word1, char *word2, int wordAmount, int line)
         printf("Line:%d. Expected keyword \"times\", found %s.\n", line, word2);
         return 0;
     }
-
-    if (wordAmount == 3)
+    printf("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAloopAmount: %d\n", loopAmount);
+    char *newCode[128];
+    int index = 0;
+    for (int i = 3; i < wordAmount; i++)
     {
-        fprintf(fp, "'.' is end of line.\n\n");
+        char *singleWord;
+        int wordLen;
+        char firstChar, lastChar;
+        singleWord = word[i];
+        printf("singleWord: %s\n", singleWord);
+        wordLen = strlen(singleWord);
+        firstChar = singleWord[0];
+        lastChar = singleWord[wordLen - 1];
+        newCode[index] = singleWord;
+        index++;
     }
-    else
+    char *newCodeFW = newCode[0];
+    int newWordAmount = strlen(newCode);
+    if (!strncmp(newCodeFW, "out", 1))
     {
-        printf("Line:%d. End of line is expected.\n", line);
-        return 0;
+        thatsOutput(newCode, newWordAmount, line);
     }
 }
-
 void thatsOutput(char **word, int wordAmount, int line)
 {
     FILE *fp;
@@ -385,7 +397,7 @@ void thatsOutput(char **word, int wordAmount, int line)
         wordLen = strlen(singleWord);
         firstChar = singleWord[0];
         lastChar = singleWord[wordLen - 1];
-        if (!strncmp(&lastChar, ",", 1))
+        if (!strncmp(&lastChar, ",", 1) || !strncmp(&lastChar, ".", 1))
         {
             sep = true;
             singleWord[strlen(singleWord) - 1] = '\0';
@@ -728,10 +740,10 @@ void thatsAnInteger(char *word, int wordAmount, int line)
 {
     FILE *fp;
     fp = fopen("myscript.lx", "a");
-    fprintf(fp, "int is a keyword.\n");
+    //fprintf(fp, "int is a keyword.\n");
     if (variableCheck(word))
     {
-        fprintf(fp, "%s is an integer variable.\n", word);
+        //fprintf(fp, "%s is an integer variable.\n", word);
         variables[variableIndex++] = word;
         integers[integerIndex++] = 0;
     }
@@ -753,7 +765,7 @@ void thatsAnInteger(char *word, int wordAmount, int line)
 
     if (wordAmount == 2)
     {
-        fprintf(fp, "'.' is end of line.\n\n");
+        //fprintf(fp, "'.' is end of line.\n\n");
     }
     else
     {
