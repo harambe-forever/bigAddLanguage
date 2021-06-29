@@ -56,6 +56,10 @@ bool variableCheck(char *str)
 
 bool integerCheck(char *str)
 {
+    if (!strncmp(str, "[", 1) || !strncmp(str, "]", 1))
+    {
+        return false;
+    }
     if (strlen(str) > 100)
         return false;
     int i;
@@ -357,8 +361,7 @@ void thatsALoop(char **word, int wordAmount, int line)
         printf("Line:%d. Expected keyword \"times\", found %s.\n", line, word2);
         return 0;
     }
-    printf("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAloopAmount: %d\n", loopAmount);
-    char *newCode[128];
+    char *newCode[256];
     int index = 0;
     for (int i = 3; i < wordAmount; i++)
     {
@@ -373,13 +376,26 @@ void thatsALoop(char **word, int wordAmount, int line)
         newCode[index] = singleWord;
         index++;
     }
+    //strtok ile bir seyler yap
+    printf("index:%d\n", index);
     char *newCodeFW = newCode[0];
     int newWordAmount = strlen(newCode);
+    for (int i = 0; i < index; i++)
+    {
+        printf("%s ", newCode[i]);
+    }
     if (!strncmp(newCodeFW, "out", 1))
     {
         for (int i = 0; i < loopAmount; i++)
         {
             thatsOutput(newCode, newWordAmount, line);
+        }
+    }
+    if (!strncmp(newCodeFW, "[", 1))
+    {
+        for (int i = 0; i < loopAmount; i++)
+        {
+            codeBlock(newCode, newWordAmount, line);
         }
     }
 }
@@ -413,7 +429,7 @@ void thatsOutput(char **word, int wordAmount, int line)
         if (strConstStart == true && strConstEnd == false)
         {
             printf("%s ", singleWord);
-            if (!strncmp(&singleWord[wordLen - 1], "\"", 1))
+            if (!strncmp(&singleWord[wordLen - 1], "\"", 1) || !strncmp(&singleWord[wordLen - 2], "\"", 1))
             {
                 strConstEnd = true;
                 printf("\n");
@@ -632,7 +648,7 @@ void thatsAdd(char *word1, char *word2, char *word3, int wordAmount, int line)
         printf("Line:%d. %s is not a declared variable.\n", line, word3);
         return 0;
     }
-    if (wordAmount == 4)
+    /*if (wordAmount == 4)
     {
         fprintf(fp, "'.' is end of line.\n\n");
     }
@@ -640,7 +656,7 @@ void thatsAdd(char *word1, char *word2, char *word3, int wordAmount, int line)
     {
         printf("Line:%d. End of line is expected.\n", line);
         return 0;
-    }
+    }*/
 }
 
 void thatsMove(char *word1, char *word2, char *word3, int wordAmount, int line)
