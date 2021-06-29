@@ -377,7 +377,10 @@ void thatsALoop(char **word, int wordAmount, int line)
     int newWordAmount = strlen(newCode);
     if (!strncmp(newCodeFW, "out", 1))
     {
-        thatsOutput(newCode, newWordAmount, line);
+        for (int i = 0; i < loopAmount; i++)
+        {
+            thatsOutput(newCode, newWordAmount, line);
+        }
     }
 }
 void thatsOutput(char **word, int wordAmount, int line)
@@ -410,7 +413,7 @@ void thatsOutput(char **word, int wordAmount, int line)
         if (strConstStart == true && strConstEnd == false)
         {
             printf("%s ", singleWord);
-            if (!strncmp(&singleWord[wordLen - 2], "\"", 1))
+            if (!strncmp(&singleWord[wordLen - 1], "\"", 1))
             {
                 strConstEnd = true;
                 printf("\n");
