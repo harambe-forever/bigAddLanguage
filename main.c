@@ -111,12 +111,15 @@ bool keywordCheck(char *str)
         return false;
     }
 }
-
+/*void loopParse(char *newCode)
+{
+}*/
 void parse(char *code)
 {
     int lineAmount = 0;
     char *line[512];
     char *linesOfCode = strtok(code, ".");
+
     while (linesOfCode != NULL)
     {
         line[lineAmount++] = linesOfCode;
@@ -361,7 +364,19 @@ void thatsALoop(char **word, int wordAmount, int line)
         printf("Line:%d. Expected keyword \"times\", found %s.\n", line, word2);
         return 0;
     }
-    char *newCode[256];
+    //printf("loopAmount: %d\n", loopAmount);
+    for (int i = 0; i < loopAmount; i++)
+    {
+        char newCode[100] = "";
+        for (int i = 3; i < wordAmount; i++)
+        {
+            strcat(newCode, " ");
+            strcat(newCode, word[i]);
+        }
+        strcat(newCode, ".");
+        parse(newCode);
+    }
+    /*char *newCode[256];
     int index = 0;
     for (int i = 3; i < wordAmount; i++)
     {
@@ -369,7 +384,7 @@ void thatsALoop(char **word, int wordAmount, int line)
         int wordLen;
         char firstChar, lastChar;
         singleWord = word[i];
-        printf("singleWord: %s\n", singleWord);
+        //printf("singleWord: %s\n", singleWord);
         wordLen = strlen(singleWord);
         firstChar = singleWord[0];
         lastChar = singleWord[wordLen - 1];
@@ -377,12 +392,12 @@ void thatsALoop(char **word, int wordAmount, int line)
         index++;
     }
     //strtok ile bir seyler yap
-    printf("index:%d\n", index);
+    //printf("index:%d\n", index);
     char *newCodeFW = newCode[0];
     int newWordAmount = strlen(newCode);
     for (int i = 0; i < index; i++)
     {
-        printf("%s ", newCode[i]);
+        printf("%s\n", newCode[i]);
     }
     if (!strncmp(newCodeFW, "out", 1))
     {
@@ -390,14 +405,7 @@ void thatsALoop(char **word, int wordAmount, int line)
         {
             thatsOutput(newCode, newWordAmount, line);
         }
-    }
-    if (!strncmp(newCodeFW, "[", 1))
-    {
-        for (int i = 0; i < loopAmount; i++)
-        {
-            codeBlock(newCode, newWordAmount, line);
-        }
-    }
+    }*/
 }
 void thatsOutput(char **word, int wordAmount, int line)
 {
@@ -432,7 +440,6 @@ void thatsOutput(char **word, int wordAmount, int line)
             if (!strncmp(&singleWord[wordLen - 1], "\"", 1) || !strncmp(&singleWord[wordLen - 2], "\"", 1))
             {
                 strConstEnd = true;
-                printf("\n");
             }
         }
         if (singleWord == NULL)
@@ -570,7 +577,7 @@ void thatsAdd(char *word1, char *word2, char *word3, int wordAmount, int line)
     fp = fopen("myscript.lx", "a");
     fprintf(fp, "add is a keyword.\n");
 
-    int i = 0; //to downcast a str int to int int
+    int i = 0;
     if (integerVariableCheck(word1))
     {
         fprintf(fp, "%s is a variable.\n", word1);
@@ -626,7 +633,7 @@ void thatsAdd(char *word1, char *word2, char *word3, int wordAmount, int line)
         int k;
         for (k = 0; k < variableIndex; k++)
         {
-            if (strcmp(variables[k], word3))
+            if (!strcmp(variables[k], word3))
             {
                 integers[k] += i;
                 break;
