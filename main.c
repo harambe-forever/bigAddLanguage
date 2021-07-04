@@ -12,9 +12,9 @@ void lexicalAnalyze(char *code);
 void parse(char *code);
 void ignoreComments(char *str);
 void thatsAnInteger(char *word, int wordAmount, int line);
-void thatsMove(char *word1, char *word2, char *word3, int wordAmount, int line);
-void thatsAdd(char *word1, char *word2, char *word3, int wordAmount, int line);
-void thatsSub(char *word1, char *word2, char *word3, int wordAmount, int line);
+void thatsMove(char *word1, char *word2, char *word3, int wordAmount, int line, bool codeB);
+void thatsAdd(char *word1, char *word2, char *word3, int wordAmount, int line, bool codeB);
+void thatsSub(char *word1, char *word2, char *word3, int wordAmount, int line, bool codeB);
 void thatsOutput(char **word, int wordAmount, int line);
 void thatsALoop(char **word, int wordAmount, int line);
 void codeBlock(char **word, int wordAmount, int line);
@@ -293,13 +293,13 @@ void parse(char *code)
             thatsAnInteger(word[1], wordAmount, i + 1);
             break;
         case 2: //move
-            thatsMove(word[1], word[2], word[3], wordAmount, i + 1);
+            thatsMove(word[1], word[2], word[3], wordAmount, i + 1, false);
             break;
         case 3: //add
-            thatsAdd(word[1], word[2], word[3], wordAmount, i + 1);
+            thatsAdd(word[1], word[2], word[3], wordAmount, i + 1, false);
             break;
         case 4: //sub
-            thatsSub(word[1], word[2], word[3], wordAmount, i + 1);
+            thatsSub(word[1], word[2], word[3], wordAmount, i + 1, false);
             break;
         case 5: //out
             thatsOutput(word, wordAmount, i + 1);
@@ -320,7 +320,6 @@ void endBlock(char **word, int wordAmount, int line)
 {
     bool flag = false;
     int k = 1;
-
     while (word[k] != NULL)
     {
         char *str = word[k];
@@ -333,17 +332,17 @@ void endBlock(char **word, int wordAmount, int line)
         else if (!strcmp(str, "move"))
         {
             //printf("WERE IN MOVE.\n");
-            thatsMove(word[k], word[k + 1], word[k + 2], wordAmount - 1, line);
+            thatsMove(word[k], word[k + 1], word[k + 2], wordAmount - 1, line, false);
         }
         else if (!strcmp(str, "add"))
         {
             //printf("WERE IN ADD.\n");
-            thatsAdd(word[k], word[k + 1], word[k + 2], wordAmount - 1, line);
+            thatsAdd(word[k], word[k + 1], word[k + 2], wordAmount - 1, line, false);
         }
         else if (!strcmp(str, "sub"))
         {
             //printf("WERE IN SUB.\n");
-            thatsSub(word[k], word[k + 1], word[k + 2], wordAmount - 1, line);
+            thatsSub(word[k], word[k + 1], word[k + 2], wordAmount - 1, line, false);
         }
         else if (!strcmp(str, "loop"))
         {
@@ -373,7 +372,7 @@ void codeBlock(char **word, int wordAmount, int line)
 {
     bool flag = false;
     int k = 1;
-
+    bool codeB = true;
     while (word[k] != NULL)
     {
         char *str = word[k];
@@ -386,17 +385,17 @@ void codeBlock(char **word, int wordAmount, int line)
         else if (!strcmp(str, "move"))
         {
             //printf("WERE IN MOVE.\n");
-            thatsMove(word[k], word[k + 1], word[k + 2], wordAmount - 1, line);
+            thatsMove(word[k], word[k + 1], word[k + 2], wordAmount - 1, line, codeB);
         }
         else if (!strcmp(str, "add"))
         {
             //printf("WERE IN ADD.\n");
-            thatsAdd(word[k], word[k + 1], word[k + 2], wordAmount - 1, line);
+            thatsAdd(word[k], word[k + 1], word[k + 2], wordAmount - 1, line, codeB);
         }
         else if (!strcmp(str, "sub"))
         {
             //printf("WERE IN SUB.\n");
-            thatsSub(word[k], word[k + 1], word[k + 2], wordAmount - 1, line);
+            thatsSub(word[k], word[k + 1], word[k + 2], wordAmount - 1, line, codeB);
         }
         else if (!strcmp(str, "loop"))
         {
@@ -549,7 +548,7 @@ void thatsOutput(char **word, int wordAmount, int line)
     }
 }
 
-void thatsSub(char *word1, char *word2, char *word3, int wordAmount, int line)
+void thatsSub(char *word1, char *word2, char *word3, int wordAmount, int line, bool codeB)
 {
     int i = 0; //to downcast a str int to int int
     if (integerVariableCheck(word1))
@@ -625,18 +624,23 @@ void thatsSub(char *word1, char *word2, char *word3, int wordAmount, int line)
         printf("Line:%d. %s is not a declared variable.\n", line, word3);
         exit(0);
     }
-
-    if (wordAmount == 4)
+    if (codeB)
     {
     }
     else
     {
-        printf("Line:%d. End of line is expected.\n", line);
-        exit(0);
+        if (wordAmount == 4)
+        {
+        }
+        else
+        {
+            printf("Line:%d. End of line is expected.\n", line);
+            exit(0);
+        }
     }
 }
 
-void thatsAdd(char *word1, char *word2, char *word3, int wordAmount, int line)
+void thatsAdd(char *word1, char *word2, char *word3, int wordAmount, int line, bool codeB)
 {
 
     int i = 0;
@@ -713,17 +717,23 @@ void thatsAdd(char *word1, char *word2, char *word3, int wordAmount, int line)
         printf("Line:%d. %s is not a declared variable.\n", line, word3);
         exit(0);
     }
-    /*if (wordAmount == 4)
+    if (codeB)
     {
     }
     else
     {
-        printf("Line:%d. End of line is expected.\n", line);
-        exit(0);
-    }*/
+        if (wordAmount == 4)
+        {
+        }
+        else
+        {
+            printf("Line:%d. End of line is expected.\n", line);
+            exit(0);
+        }
+    }
 }
 
-void thatsMove(char *word1, char *word2, char *word3, int wordAmount, int line)
+void thatsMove(char *word1, char *word2, char *word3, int wordAmount, int line, bool codeB)
 {
     int i = 0; //to see if what's coming next is integer or variable
     if (integerCheck(word1))
@@ -799,14 +809,19 @@ void thatsMove(char *word1, char *word2, char *word3, int wordAmount, int line)
         printf("Line:%d. %s is not a declared variable.\n", line, word3);
         exit(0);
     }
-
-    if (wordAmount == 4)
+    if (codeB)
     {
     }
     else
     {
-        printf("Line:%d. End of line is expected.\n", line);
-        exit(0);
+        if (wordAmount == 4)
+        {
+        }
+        else
+        {
+            printf("Line:%d. End of line is expected.\n", line);
+            exit(0);
+        }
     }
 }
 
