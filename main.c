@@ -4,8 +4,7 @@
 #include <stdlib.h>
 
 /* Made by:
-05190000098- Mehmet Gökberk Ayhan
-05190000068- Burak Taha Pekşen
+0519.98
 */
 
 bool variableCheck(char *str);
