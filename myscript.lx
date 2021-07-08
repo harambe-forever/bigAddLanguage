@@ -1,102 +1,110 @@
-int is a keyword.
-size is an integer variable.
-'.' is end of line.
+Keyword: int
+Identifier: size
+EndOfLine
 
-int is a keyword.
-sum is an integer variable.
-'.' is end of line.
+Keyword: int
+Identifier: sum
+EndOfLine
 
-move is a keyword.
-5 is an integer.
-to is a keyword.
-size is a variable.
-'.' is end of line.
+Keyword: move
+IntConstant: -5
+Keyword: to
+Identifier: size
+EndOfLine
 
-add is a keyword.
-10 is an integer.
-to is a keyword.
-size is a variable.
-'.' is end of line.
+Keyword: out
+"lorem ipsum dolor sit amet"  is a StringConst.
+Identifier: newline
+EndOfLine
 
-loop is a keyword.
-size is a variable.
-times is a keyword.
-'.' is end of line.
+Keyword: move
+IntConstant: 10
+Keyword: to
+Identifier: sum
+EndOfLine
 
-out is a keyword.
-newline is a keyword.
+Keyword: out
+"Sum ilk value:"  is a StringConst.
+Identifier: sum
 Seperator
-"Sum:" is a string constant.
-Seperator.
-sum is a variable.
-'.' is end of line.
+Identifier: newline
+EndOfLine
 
-out is a keyword.
-size is a variable.
-Seperator.
-sum is a variable.
-'.' is end of line.
+Keyword: sub
+IntConstant: 10
+Keyword: from
+Identifier: sum
+EndOfLine
 
-out is a keyword.
-5 is an integer.
+Keyword: out
+"Sum yeni value:"  is a StringConst.
+Identifier: sum
 Seperator
-"Metallica" is a string constant.
-Seperator.
-sum is a variable.
-Seperator.
-size is a variable.
-'.' is end of line.
+Identifier: newline
+EndOfLine
 
-loop is a keyword.
-3 is an integer.
-times is a keyword.
-'.' is end of line.
+Keyword: add
+IntConstant: 100
+Keyword: to
+Identifier: sum
+EndOfLine
 
-Entering codeBlock.
-int is a keyword.
-zort is an integer variable.
-'.' is end of line.
-
-int is a keyword.
-pirt is an integer variable.
-'.' is end of line.
-
-loop is a keyword.
-4 is an integer.
-times is a keyword.
-'.' is end of line.
-
-Entering codeBlock.
-add is a keyword.
-5 is an integer.
-to is a keyword.
-pirt is a variable.
-'.' is end of line.
-
-out is a keyword.
-sum is a variable.
-'.' is end of line.
-
-Exit from codeBlock.
-out is a keyword.
-31 is an integer.
+Keyword: out
+"sum son value:"  is a StringConst.
+Identifier: sum
 Seperator
-"lorem ipsum dolor sit amet" is a string constant.
-Seperator.
-move is a keyword.
-zort is a variable.
-to is a keyword.
-pirt is a variable.
-'.' is end of line.
+Identifier: newline
+EndOfLine
 
-Exit from codeBlock.
-int is a keyword.
-aq is an integer variable.
-'.' is end of line.
+Keyword: loop
+IntConstant: 10
+Keyword: times
+Keyword: out
+"*"  is a StringConst.
+Seperator
+Identifier: newline
+EndOfLine
 
-move is a keyword.
-31 is an integer.
-to is a keyword.
-aq is a variable.
-'.' is end of line.
+Keyword: loop
+IntConstant: 5
+Keyword: times
+OpenBlock.
 
+Keyword: sub
+IntConstant: 10
+Keyword: from
+Identifier: sum
+Keyword: add
+IntConstant: 5
+Keyword: to
+Identifier: size
+Keyword: add
+Identifier: size
+Keyword: to
+Identifier: sum
+EndOfLine
+
+EndBlock.
+
+Keyword: out
+"Sum: "  is a StringConst.
+Identifier: sum
+Seperator
+Identifier: newline
+EndOfLine
+
+IntConstant: 100
+Identifier: olmasi
+Keyword: out
+"Size: "  is a StringConst.
+Identifier: size
+Seperator
+Identifier: newline
+Seperator
+Identifier: newline
+Seperator
+Identifier: newline
+EndOfLine
+
+IntConstant: 20
+Identifier: olmasi
