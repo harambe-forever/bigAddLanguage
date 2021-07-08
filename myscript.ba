@@ -1,6 +1,19 @@
 int size.
 int sum.
-move 5 to size.
-out size, newline, "bum yaranamadim yavrum bum", sum.
-loop 10 times out "*".
-out "anan".
+move -5 to size.
+out "lorem ipsum dolor sit amet", newline.
+move 10 to sum.
+out "Sum ilk value:", sum, newline.
+sub 10 from sum.
+out "Sum yeni value:", sum, newline.
+add 100 to sum.
+out "sum son value:", sum, newline.
+loop 10 times out "*", newline.
+loop 5 times
+[ 
+  sub 10 from sum
+  add 5 to size
+  add size to sum.
+]
+out "Sum: ", sum, newline. {sum'un 100 olmasi lazim}
+out "Size: ", size, newline, newline, newline. {size'in 20 olmasi lazim}
