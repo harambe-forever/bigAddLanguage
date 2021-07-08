@@ -3,7 +3,11 @@
 #include <string.h>
 #include <stdlib.h>
 
-bool seperator(char *str);
+/* Made by:
+05190000098- Mehmet Gökberk Ayhan
+05190000068- Burak Taha Pekşen
+*/
+
 bool variableCheck(char *str);
 bool keywordCheck(char *str);
 bool integerCheck(char *str);
@@ -25,14 +29,6 @@ char *variables[512];
 int variableIndex = 0;
 int integers[512] = {0};
 int integerIndex = 0;
-
-bool seperator(char *str)
-{
-    int len = strlen(str);
-    if (!strcmp(&str[len - 1], &","))
-        return true;
-    return false;
-}
 
 bool variableCheck(char *str)
 {
@@ -71,6 +67,10 @@ bool integerCheck(char *str)
         if (i == 0)
         {
             if (atoi(str) < 0 && isdigit(str) && strlen(str) > 1)
+            {
+                return true;
+            }
+            if (!strncmp(&str[0], "-", 1) && isdigit(str[1]))
             {
                 return true;
             }
@@ -241,7 +241,6 @@ void parse(char *code)
     int lineAmount = 0;
     char *line[512];
     char *linesOfCode = strtok(code, ".");
-
     while (linesOfCode != NULL)
     {
         line[lineAmount++] = linesOfCode;
@@ -260,7 +259,7 @@ void parse(char *code)
 
         if (wordAmount == 0)
         {
-            printf("No code to execute");
+            printf("No code left to execute");
             return;
         }
 
@@ -307,10 +306,10 @@ void parse(char *code)
         case 6: //loop
             thatsALoop(word, wordAmount, i + 1);
             break;
-        case 7:
+        case 7: //enter block
             codeBlock(word, wordAmount, i + 1);
             break;
-        case 8:
+        case 8: //exit block
             endBlock(word, wordAmount, i + 1);
             break;
         }
@@ -328,39 +327,45 @@ void endBlock(char **word, int wordAmount, int line)
         {
             //printf("WERE IN INTEGER.\n", wordAmount);
             thatsAnInteger(word[2], wordAmount - 1, line);
+            break;
         }
         else if (!strcmp(str, "move"))
         {
             //printf("WERE IN MOVE.\n");
             thatsMove(word[k], word[k + 1], word[k + 2], wordAmount - 1, line, false);
+            break;
         }
         else if (!strcmp(str, "add"))
         {
             //printf("WERE IN ADD.\n");
             thatsAdd(word[k], word[k + 1], word[k + 2], wordAmount - 1, line, false);
+            break;
         }
         else if (!strcmp(str, "sub"))
         {
             //printf("WERE IN SUB.\n");
             thatsSub(word[k], word[k + 1], word[k + 2], wordAmount - 1, line, false);
+            break;
         }
         else if (!strcmp(str, "loop"))
         {
             //printf("WERE IN LOOP.\n");
             thatsALoop(word, wordAmount - 1, line);
+            break;
         }
         else if (!strcmp(str, "out"))
         {
             //printf("WERE IN OUT.\n");
             thatsOutput(word, wordAmount, line);
+            break;
         }
-        /*else if (!keywordCheck(word[1]))
+        else if (!keywordCheck(word[1]))
         {
             if (flag)
                 continue;
             printf("Line:%d. %s is not a keyword. Rest of the line can not be parsed.\n", line, word[1]);
             flag = true;
-        }*/
+        }
         else
         {
             printf("");
@@ -412,7 +417,6 @@ void codeBlock(char **word, int wordAmount, int line)
             if (flag)
                 continue;
             printf("Line:%d. %s is not a keyword. Rest of the line can not be parsed.\n", line, word[1]);
-            printf("See report for more information.(page:)\n");
             flag = true;
         }
         else
@@ -527,7 +531,7 @@ void thatsOutput(char **word, int wordAmount, int line)
         }
         else if (integerCheck(singleWord))
         {
-            printf("Integer Value: %s\n", singleWord);
+            printf("Integer value: %s", singleWord);
         }
         else if (integerVariableCheck(singleWord))
         {
@@ -535,7 +539,7 @@ void thatsOutput(char **word, int wordAmount, int line)
             {
                 if (!strcmp(variables[i], singleWord))
                 {
-                    printf("'%s' variable value: %i\n", singleWord, integers[i]);
+                    printf("'%s' variable value: %i", singleWord, integers[i]);
                     break;
                 }
             }
@@ -642,7 +646,6 @@ void thatsSub(char *word1, char *word2, char *word3, int wordAmount, int line, b
 
 void thatsAdd(char *word1, char *word2, char *word3, int wordAmount, int line, bool codeB)
 {
-
     int i = 0;
     if (integerVariableCheck(word1))
     {
@@ -722,12 +725,12 @@ void thatsAdd(char *word1, char *word2, char *word3, int wordAmount, int line, b
     }
     else
     {
-        if (wordAmount == 4)
+        if (wordAmount == 4 || wordAmount == 5)
         {
         }
         else
         {
-            printf("Line:%d. End of line is expected.\n", line);
+            printf("Line:%d. addEnd of line is expected.\n", line);
             exit(0);
         }
     }
@@ -948,7 +951,7 @@ int main()
         fclose(filePointer), free(code), fputs("entire read fails", stderr), exit(1);
     }
 
-    ignoreComments(code);
+    //ignoreComments(code);
     lexicalAnalyze(code);
     filePointer = fopen(fileName, "rb");
     if (!filePointer)
